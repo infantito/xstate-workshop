@@ -1,4 +1,4 @@
-const elBox = document.querySelector('#box');
+const elBox = document.querySelector('#box')
 
 // function transition(state, event) {
 //   switch (state) {
@@ -35,24 +35,26 @@ const machine = {
       },
     },
   },
-};
+}
 
-let currentState = machine.initial;
+let currentState = machine.initial
 
 function transition(state, event) {
-  const nextState = machine.states[state].on?.[event] || state;
+  const nextState = machine.states[state].on[event] || state
 
-  return nextState;
+  return nextState
 }
 
 function send(event) {
-  currentState = transition(currentState, event);
+  const nextState = transition(currentState, event)
 
-  console.log(currentState);
+  currentState = nextState
 
-  elBox.dataset.state = currentState;
+  console.log(currentState)
+
+  elBox.dataset.state = currentState
 }
 
 elBox.addEventListener('click', () => {
-  send('CLICK');
-});
+  send('CLICK')
+})
