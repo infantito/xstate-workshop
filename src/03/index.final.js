@@ -1,6 +1,6 @@
-import { createMachine, interpret } from 'xstate';
+import { createMachine, interpret } from 'xstate'
 
-const elBox = document.querySelector('#box');
+const elBox = document.querySelector('#box')
 
 const machine = createMachine({
   initial: 'inactive',
@@ -20,24 +20,24 @@ const machine = createMachine({
       },
     },
   },
-});
+})
 
-const service = interpret(machine);
+const service = interpret(machine)
 
-service.onTransition((state) => {
-  console.log(state);
+service.onTransition(state => {
+  console.log(state)
 
-  elBox.dataset.state = state.value;
-});
+  elBox.dataset.state = state.value
+})
 
-service.start();
+service.start()
 
-elBox.addEventListener('mousedown', (event) => {
+elBox.addEventListener('mousedown', event => {
   // service.send({ type: 'mousedown', ... })
-  service.send(event);
-});
+  service.send(event)
+})
 
-elBox.addEventListener('mouseup', (event) => {
+elBox.addEventListener('mouseup', event => {
   // service.send({ type: 'mousedown', ... })
-  service.send(event);
-});
+  service.send(event)
+})

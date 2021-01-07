@@ -1,7 +1,7 @@
-import { createMachine, assign, interpret } from 'xstate';
+import { createMachine, assign, interpret } from 'xstate'
 
-const elBox = document.querySelector('#box');
-const elBody = document.body;
+const elBox = document.querySelector('#box')
+const elBody = document.body
 
 const machine = createMachine({
   initial: 'idle',
@@ -39,24 +39,24 @@ const machine = createMachine({
       },
     },
   },
-});
+})
 
-const service = interpret(machine);
+const service = interpret(machine)
 
-service.onTransition((state) => {
+service.onTransition(state => {
   if (state.changed) {
-    console.log(state.context);
+    console.log(state.context)
 
-    elBox.dataset.state = state.value;
+    elBox.dataset.state = state.value
 
-    elBox.style.setProperty('--dx', state.context.dx);
-    elBox.style.setProperty('--dy', state.context.dy);
-    elBox.style.setProperty('--x', state.context.x);
-    elBox.style.setProperty('--y', state.context.y);
+    elBox.style.setProperty('--dx', state.context.dx)
+    elBox.style.setProperty('--dy', state.context.dy)
+    elBox.style.setProperty('--x', state.context.x)
+    elBox.style.setProperty('--y', state.context.y)
   }
-});
+})
 
-service.start();
+service.start()
 
 // Add event listeners for:
 // - mousedown on elBox

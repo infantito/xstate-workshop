@@ -1,9 +1,9 @@
-import { createMachine, interpret } from 'xstate';
+import { createMachine, interpret } from 'xstate'
 
-const elApp = document.querySelector('#app');
-const elOffButton = document.querySelector('#offButton');
-const elOnButton = document.querySelector('#onButton');
-const elModeButton = document.querySelector('#modeButton');
+const elApp = document.querySelector('#app')
+const elOffButton = document.querySelector('#offButton')
+const elOnButton = document.querySelector('#onButton')
+const elModeButton = document.querySelector('#modeButton')
 
 const displayMachine = createMachine(
   {
@@ -59,22 +59,22 @@ const displayMachine = createMachine(
       TIMEOUT: 5000,
     },
   }
-);
+)
 
 const displayService = interpret(displayMachine)
-  .onTransition((state) => {
-    elApp.dataset.state = state.toStrings().join(' ');
+  .onTransition(state => {
+    elApp.dataset.state = state.toStrings().join(' ')
   })
-  .start();
+  .start()
 
 elOnButton.addEventListener('click', () => {
-  displayService.send('TURN_ON');
-});
+  displayService.send('TURN_ON')
+})
 
 elOffButton.addEventListener('click', () => {
-  displayService.send('TURN_OFF');
-});
+  displayService.send('TURN_OFF')
+})
 
 elModeButton.addEventListener('click', () => {
-  displayService.send('SWITCH');
-});
+  displayService.send('SWITCH')
+})

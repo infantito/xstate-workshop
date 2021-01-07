@@ -1,6 +1,6 @@
-import { createMachine } from 'xstate';
+import { createMachine } from 'xstate'
 
-const elBox = document.querySelector('#box');
+const elBox = document.querySelector('#box')
 
 const machine = createMachine({
   initial: 'inactive',
@@ -20,18 +20,18 @@ const machine = createMachine({
       },
     },
   },
-});
+})
 
-let currentState = machine.initialState;
+let currentState = machine.initialState
 
 function send(event) {
-  currentState = machine.transition(currentState, event);
+  currentState = machine.transition(currentState, event)
 
-  console.log(currentState);
+  console.log(currentState)
 
-  elBox.dataset.state = currentState.value;
+  elBox.dataset.state = currentState.value
 }
 
 elBox.addEventListener('click', () => {
-  send('CLICK');
-});
+  send('CLICK')
+})
