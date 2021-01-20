@@ -38,49 +38,78 @@ const resetPosition = assign({
   py: 0,
 })
 
-const dragDropMachine = createMachine({
-  // The initial state should check auth status instead.
-  initial: 'idle',
-  context: {
-    x: 0,
-    y: 0,
-    dx: 0,
-    dy: 0,
-    px: 0,
-    py: 0,
-    user: undefined,
-  },
-  states: {
-    // Add two states:
-    // - checkingAuth (with transient transitions)
-    // - unauthorized
-    idle: {
-      on: {
-        mousedown: {
-          actions: assignPoint,
-          target: 'dragging',
+const createDragDropMachine = user =>
+  createMachine({
+    // The initial state should check auth status instead.
+    initial: 'checkingAuth',
+    context: {
+      x: 0,
+      y: 0,
+      dx: 0,
+      dy: 0,
+      px: 0,
+      py: 0,
+      user,
+    },
+    states: {
+      checkingAuth: {
+        always: [
+          {
+            cond: (context, event) => {
+              return !!context.user
+            },
+            target: 'idle',
+          },
+          {
+            target: 'unauthorized',
+          },
+        ],
+      },
+      unauthorized: {},
+      // Add two states:
+      // - checkingAuth (with transient transitions)
+      // - unauthorized
+      idle: {
+        on: {
+          mousedown: {
+            actions: assignPoint,
+            target: 'dragging',
+          },
+        },
+      },
+      dragging: {
+        on: {
+          mousemove: {
+            actions: assignDelta,
+          },
+          mouseup: {
+            actions: [assignPosition],
+            target: 'idle',
+          },
+          'keyup.escape': {
+            target: 'idle',
+            actions: resetPosition,
+          },
         },
       },
     },
-    dragging: {
-      on: {
-        mousemove: {
-          actions: assignDelta,
-        },
-        mouseup: {
-          actions: [assignPosition],
-          target: 'idle',
-        },
-        'keyup.escape': {
-          target: 'idle',
-          actions: resetPosition,
-        },
-      },
-    },
-  },
-})
+  })
 
-const service = interpret(dragDropMachine)
+/**
+ * Mode 01
+ *
+ * const service = interpret(
+ *   dragDropMachine.withContext({
+ *     ...dragDropMachine.initialState.context,
+ *     user: { name: 'infantito' },
+ *   })
+ * )
+ */
+
+/**
+ * Mode 02
+ */
+const service = interpret(createDragDropMachine({ name: 'infantito' }))
 
 service.onTransition(state => {
   elBox.dataset.state = state.value
