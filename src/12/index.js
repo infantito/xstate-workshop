@@ -23,16 +23,38 @@ const machine = createMachine({
       },
     },
     pending: {
+      on: {
+        RESOLVE: 'resolved',
+        CANCEL: 'idle',
+      },
       invoke: {
         // Invoke your promise here.
         // The `src` should be a function that returns the source.
+        src: (context, event) => {
+          return randomFetch()
+        },
+        onDone: {
+          target: 'resolved',
+          actions: (_, event) => {
+            console.log(event)
+          },
+        },
+        onError: {
+          target: 'rejected',
+        },
       },
     },
     resolved: {
       // Add a transition to fetch again
+      on: {
+        FETCH: 'idle',
+      },
     },
     rejected: {
       // Add a transition to fetch again
+      on: {
+        FETCH: 'idle',
+      },
     },
   },
 })
@@ -49,4 +71,10 @@ service.start()
 
 elBox.addEventListener('click', event => {
   service.send('FETCH')
+})
+
+const elCancel = document.querySelector('#cancel')
+
+elCancel.addEventListener('click', event => {
+  service.send('CANCEL')
 })
