@@ -1,4 +1,4 @@
-import { createMachine, assign, interpret } from 'xstate'
+import { createMachine, interpret, send } from 'xstate'
 
 const elBox = document.querySelector('#box')
 
@@ -24,23 +24,31 @@ const machine = createMachine({
     },
     pending: {
       on: {
-        RESOLVE: 'resolved',
+        I_AM_DONE: 'resolved',
         CANCEL: 'idle',
+        SEND_IT_ALREADY: {
+          actions: send(
+            {
+              type: 'SEND_IT_ALREADY',
+            },
+            {
+              to: 'myChildId',
+            }
+          ),
+        },
       },
       invoke: {
+        id: 'myChildId',
         // Invoke your promise here.
         // The `src` should be a function that returns the source.
-        src: (context, event) => {
-          return randomFetch()
-        },
-        onDone: {
-          target: 'resolved',
-          actions: (_, event) => {
-            console.log(event)
-          },
-        },
-        onError: {
-          target: 'rejected',
+        src: (context, event) => (sendBack, receive) => {
+          receive(event => {
+            if (event.type === 'SEND_IT_ALREADY') {
+              sendBack({
+                type: 'I_AM_DONE',
+              })
+            }
+          })
         },
       },
     },
@@ -76,5 +84,5 @@ elBox.addEventListener('click', event => {
 const elCancel = document.querySelector('#cancel')
 
 elCancel.addEventListener('click', event => {
-  service.send('CANCEL')
+  service.send('SEND_IT_ALREADY')
 })
