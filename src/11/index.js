@@ -10,7 +10,7 @@ const displayMachine = createMachine({
   states: {
     hidden: {
       on: {
-        TURN_ON: 'visible',
+        TURN_ON: 'visible.history',
       },
     },
     visible: {
@@ -22,6 +22,10 @@ const displayMachine = createMachine({
       // - mode (light or dark)
       // - brightness (bright or dim)
       states: {
+        history: {
+          type: 'history',
+          history: 'deep',
+        },
         mode: {
           initial: 'light',
           states: {
